@@ -66,6 +66,12 @@ else
   "$BINARY" --home "$HOME_DIR" keys add "$KEY_NAME" --keyring-backend "$KEYRING_BACKEND" 2>&1
 fi
 
+echo "Private key (0x):"
+run_keyring_cmd "$BINARY" --home "$HOME_DIR" keys unsafe-export-eth-key "$KEY_NAME" --keyring-backend "$KEYRING_BACKEND" | sed 's/^/0x/'
+
+echo
+read -rp "Save the mnemonic and private key, then press ENTER to continue..."
+
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
@@ -80,7 +86,4 @@ echo "Address (bech32, account):       $BECH32_ADDR"
 echo "Address (bech32, valoper):        $(run_keyring_cmd "$BINARY" --home "$HOME_DIR" keys show "$KEY_NAME" --bech val -a --keyring-backend "$KEYRING_BACKEND")"
 echo "0x address (same account, for MetaMask):"
 "$BINARY" --home "$HOME_DIR" debug addr "$BECH32_ADDR"
-echo
-echo "To import the account into MetaMask (exposes the private key in plain text):"
-echo "  $BINARY --home $HOME_DIR keys unsafe-export-eth-key $KEY_NAME --keyring-backend $KEYRING_BACKEND"
 echo "======================================================================"
