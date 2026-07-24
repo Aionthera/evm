@@ -9,8 +9,13 @@ Conventions common to all scripts:
 - Configurable via environment variable (`CHAIN_ID`, `HOME_DIR`, `KEY_NAME`,
   etc.) — run `VAR=value ./scripts/something.sh`. The defaults appear at the
   top of each file.
-- `BINARY` default: `evm/build/aiontherad`. If it doesn't exist yet, the
-  scripts compile it automatically (`make -C evm build`) before continuing.
+- `BINARY` default: auto-detected in `evm/build/` based on the current OS/arch
+  (`aiontherad-linux-amd64`, `aiontherad-linux-arm64`,
+  `aiontherad-windows-amd64.exe`, `aiontherad-windows-arm64.exe`). This repo
+  ships only these pre-compiled binaries — there is no source/Makefile to
+  build from, so if auto-detection can't find a match for your OS/arch (e.g.
+  macOS), set `BINARY` explicitly to point at one of the files in
+  `evm/build/`.
 - `HOME_DIR` default: `~/.aiontherad`. If you run more than one node/validator
   on the same machine, use different `HOME_DIR` values to avoid collisions.
 - Secrets (mnemonic, private key) are requested interactively by
@@ -19,70 +24,12 @@ Conventions common to all scripts:
 
 ## Dependencies
 
-The scripts (and the `make -C evm build` they run automatically when the
-binary is missing — which also runs `setup-go-env.sh` first, see below) need:
-`go`, a C compiler + `make` (`CGO_ENABLED=1` is required by the Cosmos SDK),
-`git`, `curl` and `jq`.
+The scripts themselves just need `curl` and `jq`.
 
 `backup-node.sh`/`restore-node.sh` additionally need `gpg` — the encryption
 passphrase is prompted for directly in the shell (or fed via
 `BACKUP_PASSPHRASE`), not via `gpg`'s own pinentry, so no `pinentry` package
 is required.
-
-### Keeping Go's cache out of `~/`
-
-By default Go writes its module cache (`GOMODCACHE`) and build cache
-(`GOCACHE`) under `~/go` and `~/.cache/go-build`, which can grow to a few GB
-per machine. `setup-go-env.sh` points those at `.go/` inside the repo
-checkout instead (handy on small disks or shared boxes):
-
-```bash
-./scripts/setup-go-env.sh
-```
-
-Every script that builds the binary automatically (`make -C evm build`) runs
-this first, so you don't need to call it yourself before the usual
-scenarios below — it's only useful to run standalone if you want the cache
-relocated before the first build, or on a machine where you'll build `evm`
-by hand outside these scripts.
-
-`.go/` is already in `.gitignore`. This is a per-user `go env` setting, not
-repo-specific config, so it applies to any Go project built on that machine
-afterward — it's idempotent, so re-running it (e.g. once per script
-invocation) is harmless.
-
-### Arch Linux
-
-```bash
-sudo pacman -Syu
-sudo pacman -S --needed go base-devel git curl jq gnupg
-```
-
-`base-devel` provides `gcc`/`make`/etc. Check `go version` against `evm/go.mod`
-after cloning — if the repo's Arch package is behind the minimum required, get
-a newer one from the AUR (e.g. `yay -S go1.22`) or install manually into
-`/usr/local/go`.
-
-### NixOS
-
-There's no package manager install step — either drop into a temporary shell
-with everything needed:
-
-```bash
-nix-shell -p go gcc gnumake git curl jq gnupg
-```
-
-or, for something that persists across reboots/reconnects, add to
-`/etc/nixos/configuration.nix`:
-
-```nix
-environment.systemPackages = with pkgs; [ go gcc gnumake git curl jq gnupg ];
-```
-
-and run `sudo nixos-rebuild switch`. `make`/`gcc` are not present by default
-outside a devshell or explicit package list — that's why a plain
-`./scripts/init-chain.sh` fails with `make: command not found` on a bare
-NixOS install.
 
 Both `backup-node.sh` and `restore-node.sh` prompt for the passphrase
 directly in the shell (hidden input) and feed it to
@@ -112,8 +59,6 @@ You are creating the Aionthera network for the first time (new genesis, block 0)
 This only makes sense to run **once**, at the original creation of the chain.
 
 ```bash
-cd evm && make build
-cd ..
 ./scripts/init-chain.sh
 ./scripts/start-chain.sh
 ```
@@ -145,9 +90,6 @@ You want to bring up a **new full node** pointing at an Aionthera network that
 is already running in production (does not generate a new genesis).
 
 ```bash
-cd evm && make build
-cd ..
-
 # grab this by running it on an already-active node on the network:
 #   aiontherad tendermint show-node-id --home ~/.aiontherad
 GENESIS_SOURCE=https://<some-node>/genesis.json \
@@ -231,9 +173,6 @@ storage) — see the detailed warnings in the script itself.
 ### 4.2 Restore on a new machine (e.g. reformatted PC, VPS migration)
 
 ```bash
-cd evm && make build
-cd ..
-
 # 1) prepare genesis + peers (generates NEW keys, which will be overwritten in step 3)
 GENESIS_SOURCE=... PERSISTENT_PEERS=... CHAIN_ID=aionthera_78912-1 ./scripts/join-network.sh
 
