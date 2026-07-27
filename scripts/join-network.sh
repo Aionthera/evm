@@ -43,12 +43,14 @@ HOME_DIR="${HOME_DIR:-$HOME/.aiontherad}"
 # Where to get the existing chain's genesis.json from. Can be:
 #   - a local path (e.g. if you copied it via scp from another node beforehand)
 #   - an http(s) URL (e.g. a /genesis.json endpoint you host)
-GENESIS_SOURCE="${GENESIS_SOURCE:-}"
+# Defaults to the genesis.json published in this repo (network/genesis.json).
+GENESIS_SOURCE="${GENESIS_SOURCE:-https://raw.githubusercontent.com/Aionthera/evm/main/network/genesis.json}"
 
-# Peers of the existing network, in "node_id@ip:26656" format, comma-separated
-# if more than one. Get the node_id by running this on a node that already
-# works: `aiontherad tendermint show-node-id --home ~/.aiontherad`
-PERSISTENT_PEERS="${PERSISTENT_PEERS:-}"
+# Seed node of the existing network — asked interactively below (defaults to
+# this project's own seed node). Get a node_id by running this on a node
+# that already works: `aiontherad comet show-node-id --home ~/.aiontherad`
+DEFAULT_SEED_NODE_ID="3825f5860e8ba06004032615fd46f0cca41fcc5d"
+DEFAULT_SEED_HOST="seed1.aionthera.org:26656"
 
 # ---------------------------------------------------------------------------
 # Initial checks
@@ -63,20 +65,12 @@ if [[ -z "$BINARY" || ! -x "$BINARY" ]]; then
   exit 1
 fi
 
-if [[ -z "$GENESIS_SOURCE" ]]; then
-  echo "GENESIS_SOURCE is not set."
-  echo "Fill it in with the path/URL of the existing chain's genesis.json, e.g.:"
-  echo "  GENESIS_SOURCE=https://myserver/genesis.json ./scripts/join-network.sh"
-  echo "  GENESIS_SOURCE=/tmp/genesis.json ./scripts/join-network.sh"
-  exit 1
-fi
-
-if [[ -z "$PERSISTENT_PEERS" ]]; then
-  echo "PERSISTENT_PEERS is not set."
-  echo "Get it by running this on an already-active node on the network:"
-  echo "  aiontherad tendermint show-node-id --home ~/.aiontherad"
-  echo "and build: PERSISTENT_PEERS=\"<node_id>@<existing-node-ip>:26656\""
-  exit 1
+if [[ -z "${PERSISTENT_PEERS:-}" ]]; then
+  read -r -p "Seed node_id [$DEFAULT_SEED_NODE_ID]: " SEED_NODE_ID
+  SEED_NODE_ID="${SEED_NODE_ID:-$DEFAULT_SEED_NODE_ID}"
+  read -r -p "Seed host:port [$DEFAULT_SEED_HOST]: " SEED_HOST
+  SEED_HOST="${SEED_HOST:-$DEFAULT_SEED_HOST}"
+  PERSISTENT_PEERS="$SEED_NODE_ID@$SEED_HOST"
 fi
 
 if [[ -d "$HOME_DIR" ]]; then

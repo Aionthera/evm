@@ -93,7 +93,7 @@ if [[ -d "$HOME_DIR" ]]; then
   read -r -p "Delete and recreate? [y/N] " confirm
   if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
     echo "Aborted. If you only want to reset the state (keeping keys/genesis), use:"
-    echo "  $BINARY --home $HOME_DIR tendermint unsafe-reset-all"
+    echo "  $BINARY --home $HOME_DIR comet unsafe-reset-all"
     exit 1
   fi
   rm -rf "$HOME_DIR"
