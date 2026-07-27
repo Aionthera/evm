@@ -49,7 +49,7 @@ GENESIS_SOURCE="${GENESIS_SOURCE:-https://raw.githubusercontent.com/Aionthera/ev
 # Seed node of the existing network — asked interactively below (defaults to
 # this project's own seed node). Get a node_id by running this on a node
 # that already works: `aiontherad comet show-node-id --home ~/.aiontherad`
-DEFAULT_SEED_NODE_ID="3825f5860e8ba06004032615fd46f0cca41fcc5d"
+DEFAULT_SEED_NODE_ID="3e0645a594888c3809d69d9e6ef40764e426545e"
 DEFAULT_SEED_HOST="seed1.aionthera.org:26656"
 
 # ---------------------------------------------------------------------------
