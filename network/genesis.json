@@ -1,7 +1,7 @@
 {
   "app_name": "aiontherad",
-  "app_version": "207d54b",
-  "genesis_time": "2026-07-25T16:06:22.893329575Z",
+  "app_version": "f9349aa",
+  "genesis_time": "2026-07-28T17:16:13.936941628Z",
   "chain_id": "aionthera_78912-1",
   "initial_height": 1,
   "app_hash": null,
@@ -18,7 +18,7 @@
       "accounts": [
         {
           "@type": "/cosmos.auth.v1beta1.BaseAccount",
-          "address": "aionthera1shkr2je8ykcq9jcrdcx7z2s3xqy7n2hjpd4xp6",
+          "address": "aionthera1xwgkr0fmvv9h5ev8rnyvfwn734lnjzdx0yjkya",
           "pub_key": null,
           "account_number": "0",
           "sequence": "0"
@@ -35,7 +35,7 @@
       },
       "balances": [
         {
-          "address": "aionthera1shkr2je8ykcq9jcrdcx7z2s3xqy7n2hjpd4xp6",
+          "address": "aionthera1xwgkr0fmvv9h5ev8rnyvfwn734lnjzdx0yjkya",
           "coins": [
             {
               "denom": "aaion",
@@ -131,7 +131,18 @@
             "access_control_list": []
           }
         },
-        "active_static_precompiles": [],
+        "active_static_precompiles": [
+          "0x0000000000000000000000000000000000000100",
+          "0x0000000000000000000000000000000000000400",
+          "0x0000000000000000000000000000000000000800",
+          "0x0000000000000000000000000000000000000801",
+          "0x0000000000000000000000000000000000000802",
+          "0x0000000000000000000000000000000000000803",
+          "0x0000000000000000000000000000000000000804",
+          "0x0000000000000000000000000000000000000805",
+          "0x0000000000000000000000000000000000000806",
+          "0x0000000000000000000000000000000000000807"
+        ],
         "history_serve_window": "8192",
         "extended_denom_options": {
           "extended_denom": "aaion"
@@ -175,10 +186,10 @@
                 },
                 "min_self_delegation": "1",
                 "delegator_address": "",
-                "validator_address": "aiontheravaloper1shkr2je8ykcq9jcrdcx7z2s3xqy7n2hj2nx4x9",
+                "validator_address": "aiontheravaloper1xwgkr0fmvv9h5ev8rnyvfwn734lnjzdxy6p9rz",
                 "pubkey": {
                   "@type": "/cosmos.crypto.ed25519.PubKey",
-                  "key": "A0Sn/dKoYEdt+Yg4j6sl8NR0hwSHtIheSgaiSq07cQY="
+                  "key": "wmYxJT1KFe3NjWp8tQc2W7s6NTeW+5ZyEIG5fnvK3r8="
                 },
                 "value": {
                   "denom": "aaion",
@@ -186,7 +197,7 @@
                 }
               }
             ],
-            "memo": "3825f5860e8ba06004032615fd46f0cca41fcc5d@192.168.15.116:26656",
+            "memo": "b536ec2a0b11eb8cdcfd8a7c4713566a223238dd@192.168.15.116:26656",
             "timeout_height": "0",
             "unordered": false,
             "timeout_timestamp": null,
@@ -198,7 +209,7 @@
               {
                 "public_key": {
                   "@type": "/cosmos.evm.crypto.v1.ethsecp256k1.PubKey",
-                  "key": "As8hbCGklr6ZUPJltT3nP8228qltwVbOQBT27gf7OqUt"
+                  "key": "A7gW+csVqwhiKPYK/U06uuzbMlqID3odYkGw+e9hXyK7"
                 },
                 "mode_info": {
                   "single": {
@@ -217,7 +228,7 @@
             "tip": null
           },
           "signatures": [
-            "eqf1zOFwPWus8/896dE38z3RuoMH9Xjx78M3F2XCMKg06t0JYDqX1MkCTBqTIDEP6hLZOarockEp0H4Sb7TLXgE="
+            "kpc7BPwESDpk2cb3jFZ7NuSUh9EqKVUi3tT0Tt0vaYs5cBykM3/ChKaJ+Eh5He3fZIE8X670SXc3QZrT12L2MwA="
           ]
         }
       ]
