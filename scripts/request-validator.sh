@@ -83,7 +83,9 @@ if [[ -z "$BINARY" || ! -x "$BINARY" ]]; then
   echo "No compiled binary found for this OS/arch (looked for: ${BINARY:-<none detected>})."
   echo "Available binaries in $REPO_ROOT/evm/build:"
   ls "$REPO_ROOT/evm/build" 2>/dev/null | sed 's/^/  /'
-  echo "Set BINARY explicitly to override, e.g.:"
+  echo "Build the release binaries with:"
+  echo "  ./scripts/build-release.sh"
+  echo "or set BINARY explicitly to override, e.g.:"
   echo "  BINARY=$REPO_ROOT/evm/build/aiontherad-linux-amd64 $0"
   exit 1
 fi
@@ -94,7 +96,7 @@ if [[ ! -f "$HOME_DIR/config/priv_validator_key.json" ]]; then
   exit 1
 fi
 
-PUBKEY="$("$BINARY" --home "$HOME_DIR" comet show-validator)"
+PUBKEY="$("$BINARY" --home "$HOME_DIR" tendermint show-validator)"
 echo ">> validator pubkey: $PUBKEY"
 
 echo ">> Config: chain-id=$CHAIN_ID from=$FROM_KEY moniker=\"$MONIKER\" self-delegation=$SELF_DELEGATION_AMOUNT commission=$COMMISSION_RATE"

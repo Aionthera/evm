@@ -42,7 +42,9 @@ if [[ -z "$BINARY" || ! -x "$BINARY" ]]; then
   echo "No compiled binary found for this OS/arch (looked for: ${BINARY:-<none detected>})."
   echo "Available binaries in $REPO_ROOT/evm/build:"
   ls "$REPO_ROOT/evm/build" 2>/dev/null | sed 's/^/  /'
-  echo "Set BINARY explicitly to override, e.g.:"
+  echo "Build the release binaries with:"
+  echo "  ./scripts/build-release.sh"
+  echo "or set BINARY explicitly to override, e.g.:"
   echo "  BINARY=$REPO_ROOT/evm/build/aiontherad-linux-amd64 $0"
   exit 1
 fi

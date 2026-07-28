@@ -43,12 +43,13 @@ HOME_DIR="${HOME_DIR:-$HOME/.aiontherad}"
 # Where to get the existing chain's genesis.json from. Can be:
 #   - a local path (e.g. if you copied it via scp from another node beforehand)
 #   - an http(s) URL (e.g. a /genesis.json endpoint you host)
-# Defaults to the genesis.json published in this repo (network/genesis.json).
-GENESIS_SOURCE="${GENESIS_SOURCE:-https://raw.githubusercontent.com/Aionthera/evm/main/network/genesis.json}"
+GENESIS_SOURCE="${GENESIS_SOURCE:-}"
 
-# Seed node of the existing network — asked interactively below (defaults to
-# this project's own seed node). Get a node_id by running this on a node
-# that already works: `aiontherad comet show-node-id --home ~/.aiontherad`
+# Peers of the existing network, in "node_id@ip:26656" format, comma-separated
+# if more than one. Asked interactively below (defaults to this project's own
+# seed node). Get a node_id by running this on a node that already works:
+# `aiontherad tendermint show-node-id --home ~/.aiontherad`
+PERSISTENT_PEERS="${PERSISTENT_PEERS:-}"
 DEFAULT_SEED_NODE_ID="3e0645a594888c3809d69d9e6ef40764e426545e"
 DEFAULT_SEED_HOST="seed1.aionthera.org:26656"
 
@@ -60,12 +61,22 @@ if [[ -z "$BINARY" || ! -x "$BINARY" ]]; then
   echo "No compiled binary found for this OS/arch (looked for: ${BINARY:-<none detected>})."
   echo "Available binaries in $REPO_ROOT/evm/build:"
   ls "$REPO_ROOT/evm/build" 2>/dev/null | sed 's/^/  /'
-  echo "Set BINARY explicitly to override, e.g.:"
+  echo "Build the release binaries with:"
+  echo "  ./scripts/build-release.sh"
+  echo "or set BINARY explicitly to override, e.g.:"
   echo "  BINARY=$REPO_ROOT/evm/build/aiontherad-linux-amd64 $0"
   exit 1
 fi
 
-if [[ -z "${PERSISTENT_PEERS:-}" ]]; then
+if [[ -z "$GENESIS_SOURCE" ]]; then
+  echo "GENESIS_SOURCE is not set."
+  echo "Fill it in with the path/URL of the existing chain's genesis.json, e.g.:"
+  echo "  GENESIS_SOURCE=https://myserver/genesis.json ./scripts/join-network.sh"
+  echo "  GENESIS_SOURCE=/tmp/genesis.json ./scripts/join-network.sh"
+  exit 1
+fi
+
+if [[ -z "$PERSISTENT_PEERS" ]]; then
   read -r -p "Seed node_id [$DEFAULT_SEED_NODE_ID]: " SEED_NODE_ID
   SEED_NODE_ID="${SEED_NODE_ID:-$DEFAULT_SEED_NODE_ID}"
   read -r -p "Seed host:port [$DEFAULT_SEED_HOST]: " SEED_HOST
